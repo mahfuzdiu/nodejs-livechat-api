@@ -1,5 +1,11 @@
+const schema = require('../validators/UserStoreValidators')
+
 const store = (req, res) =>{
-    return res.json(200, req.body)
+    let {error, value} = schema.validate(req.body, {abortEarly: false})
+
+    if(error) return res.json(error.details)
+
+    return res.json(200, value)
 }
 
 module.exports = {
