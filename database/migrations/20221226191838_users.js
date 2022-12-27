@@ -11,7 +11,8 @@ exports.up = function (knex) {
         table.string('mobile')
         table.integer('created_by')
         table.text('address')
-        table.timestamps()
+        table.timestamp('created_at').defaultTo(knex.fn.now());
+        table.timestamp('updated_at').defaultTo(knex.fn.now());
         table.date('deleted_at')
     })
 };

@@ -1,13 +1,49 @@
-const schema = require('../validators/UserStoreValidators')
+const userStoreSchema = require('../validators/UserStoreValidators')
+const userUpdateSchema = require('../validators/UserUpdateValidators')
+
+const knex = require('../../database/knex')
+const bcrypt = require('bcryptjs')
+
+const index = (req, res) =>{
+    knex.select()
+        .from('users')
+        .where('id', req.params.id)
+        .where('deleted_at', null)
+        .then(function (user){ return res.send(user)})
+}
 
 const store = (req, res) =>{
-    let {error, value} = schema.validate(req.body, {abortEarly: false})
+    let {error, value} = userStoreSchema.validate(req.body, {abortEarly: false})
     if(error) return res.json(error.details)
-        res.send(value)
+    delete value.confirm_password
+    value.password = bcrypt.hashSync(value.password, 10)
 
-    //res.json(200, 'User created')
+    knex.insert(value).into('users')
+        .returning('id')
+        .then(function (id){
+            return res.send('Added a new user, id: ' + id)
+        })
+}
+
+const update = (req, res) => {
+    const {error, value} = userUpdateSchema.validate(req.body)
+    if(error) return res.json(error)
+    knex.update(value)
+        .into('users')
+        .where('id', req.params.id)
+        .then(function (result){ res.json(result)})
+}
+
+const destroy = (req, res) => {
+    knex('users').where('id', req.params.id).update({deleted_at: knex.fn.now()})
+        .then(function (result) {
+            res.json(result)
+        })
 }
 
 module.exports = {
+    index,
     store,
+    update,
+    destroy
 }

@@ -5,6 +5,8 @@ const schema = Joi.object({
     'email': Joi.string().email().required(),
     "password": Joi.string().length(4).required(),
     "confirm_password": Joi.ref('password'),
+    "mobile" : Joi.string(),
+    "address": Joi.string()
 })
 
 module.exports = schema
