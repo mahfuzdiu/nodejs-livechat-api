@@ -8,6 +8,14 @@ app.use(express.json())
 const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
+//enables session
+const expressSession = require('express-session')
+app.use(expressSession({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: false,
+}))
+
 //adds main route
 const router = require('./routes/index.route')
 app.use(router)

@@ -2,12 +2,12 @@ const express = require('express')
 const router = express.Router()
 
 const permissionMiddleware = require('../../app/middleware/permission.middleware')
-const UserController = require('../../app/controller/UserController')
+const userController = require('../../app/controller/user.controller')
 
 // router.use(permissionMiddleware)
-router.get('/:id', UserController.index)
-router.post('/store', UserController.store)
-router.put('/update/:id', UserController.update)
-router.delete('/delete/:id', UserController.destroy)
+router.get('/me', userController.index)
+router.post('/store', userController.store)
+router.put('/update/:id', userController.update)
+router.delete('/delete/:id', userController.destroy)
 
 module.exports = router

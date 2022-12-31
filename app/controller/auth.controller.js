@@ -10,16 +10,21 @@ const login = (req, res) => {
             let user = userArray[0]
             if(bcrypt.compareSync(req.body.password, user.password)){
                 let token = jwt.sign({
-                    data: {
                         id: user.id,
                         email: user.email,
                         created_at: user.created_at
+                    },
+                    process.env.JWT_PRIVATE_KEY,
+                    {
+                        expiresIn: 60 * 30
                     }
-                }, process.env.JWT_PRIVATE_KEY, { expiresIn: 60 * 30 })
+                )
+
+                req.session.userId = user.id
 
                 //set token as http only cookie
                 res.cookie('token', token)
-                res.send('Successfully logged in...')
+                res.send('Successfully logged in...' + req.session.userId)
             } else
                 res.json('Wrong password')
         } else

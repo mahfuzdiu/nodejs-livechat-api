@@ -1,5 +1,5 @@
-const userStoreSchema = require('../validators/UserStoreValidators')
-const userUpdateSchema = require('../validators/UserUpdateValidators')
+const userStoreSchema = require('../validators/users/user.store.validators')
+const userUpdateSchema = require('../validators/users/user.update.validators')
 
 const knex = require('../../database/knex')
 const bcrypt = require('bcryptjs')
@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs')
 const index = (req, res) =>{
     knex.select()
         .from('users')
-        .where('id', req.params.id)
+        .where('id', req.session.userId)
         .where('deleted_at', null)
         .then(function (user){ return res.send(user)})
 }
