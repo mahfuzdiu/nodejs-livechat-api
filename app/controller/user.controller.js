@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs')
 const index = (req, res) =>{
     knex.select()
         .from('users')
-        .where('id', req.session.userId)
+        .where('id', req.user.id)
         .where('deleted_at', null)
         .then(function (user){ return res.send(user)})
 }
@@ -30,12 +30,12 @@ const update = (req, res) => {
     if(error) return res.json(error)
     knex.update(value)
         .into('users')
-        .where('id', req.params.id)
+        .where('id', req.user.id)
         .then(function (result){ res.json(result)})
 }
 
 const destroy = (req, res) => {
-    knex('users').where('id', req.params.id).update({deleted_at: knex.fn.now()})
+    knex('users').where('id', req.user.id).update({deleted_at: knex.fn.now()})
         .then(function (result) {
             res.json(result)
         })

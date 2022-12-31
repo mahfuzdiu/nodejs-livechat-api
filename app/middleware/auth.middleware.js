@@ -4,6 +4,7 @@ const token = (req, res, next) => {
     try {
         let verifiedUser = jwt.verify(req.cookies.token, process.env.JWT_PRIVATE_KEY)
         if(verifiedUser){
+            req.user = verifiedUser
             next()
         }
     }catch (error){
